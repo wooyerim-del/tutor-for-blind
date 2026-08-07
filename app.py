@@ -1,6 +1,8 @@
 import cv2
 import numpy as np
 import streamlit as st
+from io import BytesIO
+from gtts import gTTS
 from mediapipe.python.solutions import hands as mp_hands
 from mediapipe.python.solutions import drawing_utils as mp_drawing
 
@@ -46,8 +48,17 @@ if img_file_buffer is not None:
         st.image(annotated_image, caption="Processed Landmark Image", use_container_width=True)
         
         # Output section
+        detected_text = "Alphabet D"
         st.subheader("Detected Result")
-        st.info("Recognized Sign Language Pattern: Alphabet 'D'")
+        st.info(f"Recognized Sign Language Pattern: {detected_text}")
+        
+        # 5. Text-to-Speech (Audio Output)
+        sound_file = BytesIO()
+        tts = gTTS(text=detected_text, lang='en')
+        tts.write_to_fp(sound_file)
+        
+        # Play Audio automatically
+        st.audio(sound_file, format='audio/mp3', autoplay=True)
         
     else:
         st.warning("No hands detected. Please make sure your hands are clearly visible in bright lighting!")
